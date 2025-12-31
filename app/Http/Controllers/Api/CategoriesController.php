@@ -10,7 +10,7 @@ class CategoriesController extends Controller
 {
     public function index () {
 
-        $categories = Category::select('id', 'name_ar', 'name_en')->get();
+        $categories = Category::select('id', 'name_'.app()->getLocale())->get();
         return response()->json($categories);
     }
 }
