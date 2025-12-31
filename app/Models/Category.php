@@ -9,12 +9,16 @@ class Category extends Model
     protected $table = 'categories';
 
     protected $fillable = [
-        'name_ar', 'name_en', 'active', 'created_at', 'apdated_at', 
+        'name_ar',
+        'name_en',
+        'active',
+        'created_at',
+        'updated_at' 
     ];
 
-    public function scopeSelection()
-    {
+    // public function scopeSelection()
+    // {
         
-    }
-    
+    // }
+
 }
