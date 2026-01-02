@@ -46,7 +46,8 @@ class CheckAdminToken
         }
 
         if (!$user)
-            $this-> returnError(trans('Unauthenticated'));
+            // return $this->returnError(trans('E3001', 'UNAUTHENTICATED'));
+            return $this->returnError('E3001', 'UNAUTHENTICATED');
 
             return $next($request);
     }
