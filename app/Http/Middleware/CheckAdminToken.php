@@ -2,13 +2,16 @@
 
 namespace App\Http\Middleware;
 
+use App\Traits\GeneralTrait;
+use App\User;
 use Closure;
-use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use JWTAuth;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CheckAdminToken
 {
+    use GeneralTrait;
     /**
      * Handle an incoming request.
      *
@@ -16,24 +19,36 @@ class CheckAdminToken
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
-        if ($guard != null) {
-            auth()->shouldUse($guard); //shoud you user guard / table
-            $token = $request->header('auth-token');
-            $request->headers->set('auth-token', (string) $token, true);
-            $request->headers->set('Authorization', 'Bearer ' . $token, true);
-            try {
-                //  $user = $this->auth->authenticate($request);  //check authenticted user
-                $user = JWTAuth::parseToken()->authenticate();
-            } catch (TokenExpiredException $e) {
-                return  $this->returnError('401', 'Unauthenticated user');
-            } catch (JWTException $e) {
 
-                return  $this->returnError('', 'token_invalid' . $e->getMessage());
+        $user = null;
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            //throw an exception
+
+        } catch (\Exception $e) {
+            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+                return $this->returnError('E3001','INVALID_TOKEN');
+            } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
+                return $this->returnError('E3001', 'EXPIRED_TOKEN');
+            } else {
+                return $this->returnError('E3001', 'TOKEN_NOTFOUND');
+            }
+        } catch (\Throwable $e) {
+            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+                return $this->returnError('E3001','INVALID_TOKEN');
+            } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
+                return $this->returnError('E3001', 'EXPIRED_TOKEN');
+            } else {
+                return $this->returnError('E3001', 'TOKEN_NOTFOUND');
             }
         }
 
-        return $next($request);
+        if (!$user)
+            $this-> returnError(trans('Unauthenticated'));
+
+            return $next($request);
     }
+    
 }
