@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Traits\GeneralTrait;
 use Exception;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,6 +47,18 @@ class AuthController extends Controller
                 
         }catch (\Exception $ex) {
             return $this->returnError($ex->getCode(), $ex->getMessage());
+        }
+    }
+
+    public function logout(Request $request) 
+    {
+        return $token = $request->header('auth-token');
+            JWTAuth::setToken($token)->invalidate();
+            return $this->returnSuccessMessage('Logged Out Successfully');
+        if ($token) {
+
+        }else {
+            return $this->returnError('', 'Token Invald . or Not Provider');
         }
     }
 }
