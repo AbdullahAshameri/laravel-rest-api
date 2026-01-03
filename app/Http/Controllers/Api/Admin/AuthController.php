@@ -37,7 +37,12 @@ class AuthController extends Controller
             if (!$token)
                 return $this->returnError('E001', 'بيانات الدخول غير صحيحة');
 
+            $data = Auth::guard('admin-api')->user();
+            $data -> api_token = $token;
             //return token
+                return $this->returnData('admin', $data);
+                // return $this->returnData('admin', $token);
+                
         }catch (\Exception $ex) {
             return $this->returnError($ex->getCode(), $ex->getMessage());
         }
