@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class AuthController extends Controller
 {
@@ -52,13 +53,19 @@ class AuthController extends Controller
 
     public function logout(Request $request) 
     {
-        return $token = $request->header('auth-token');
-            JWTAuth::setToken($token)->invalidate();
-            return $this->returnSuccessMessage('Logged Out Successfully');
+        $token = $request->header('auth-token');
+
         if ($token) {
+            try {
+                // invalidate() => إبطال (حذف) التوكن الحالي وإنهاء جلسة المستخدم
+                JWTAuth::setToken($token)->invalidate(); // Logout
+            }catch(TokenInvalidException $e) {
+                return $this->returnError('', 'Token Invald . or Not Provider');
+            }
+            return $this->returnSuccessMessage('Logged Out Successfully');
 
         }else {
-            return $this->returnError('', 'Token Invald . or Not Provider');
+             $this->returnError('', 'Token Invald . or Not Provider');
         }
     }
 }

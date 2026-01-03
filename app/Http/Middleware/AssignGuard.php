@@ -16,7 +16,8 @@ class AssignGuard
     public function handle($request, Closure $next, $guard = null)
     {
         if ($guard != null) 
-            auth()->shouldUse($guard);
+            auth()->shouldUse($guard); // تحديد الـ guard المستخدم لهذا الطلب
+
         return $next($request);
     }
 }
