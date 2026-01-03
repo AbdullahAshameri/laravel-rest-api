@@ -42,18 +42,18 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'jwt',
             'provider' => 'users',
             'hash' => false,
         ],
 
         // 'user-api' => [
-        //     'driver' => 'token',
+        //     'driver' => 'jwt',
         //     'provider' => 'users',
         // ],
 
         'admin-api' => [
-            'driver' => 'token',
+            'driver' => 'jwt',
             'provider' => 'admins',
         ],
     ],

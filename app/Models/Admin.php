@@ -13,14 +13,11 @@ class Admin extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
+        'password',
         'created_at',
         'updated_at' 
     ];
 
-    // public function scopeSelection()
-    // {
-        
-    // }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
