@@ -39,6 +39,7 @@ class AuthController extends Controller
 
             $data = Auth::guard('admin-api')->user();
             $data -> api_token = $token;
+            
             //return token
                 return $this->returnData('admin', $data);
                 // return $this->returnData('admin', $token);
