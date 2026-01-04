@@ -30,6 +30,11 @@ Route::group(['middleware' => ['api', 'checkpassword', 'changelanguage'], 'names
     });
 
     //user api
+    Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
+        Route::post('login', 'AuthController@login');
+    });
+
+    //user api
     Route::group(['prefix' => 'user', 'middleware' => 'auth.guard:user-api'], function () {
         Route::post('profile', function () {
             return 'Onlay Authenticated User Can Reach Me';
