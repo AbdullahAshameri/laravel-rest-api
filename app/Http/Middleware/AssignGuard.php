@@ -2,10 +2,15 @@
 
 namespace App\Http\Middleware;
 
+use App\Traits\GeneralTrait;
 use Closure;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 
-class AssignGuard
+class AssignGuard extends BaseMiddleware
 {
+    use GeneralTrait;
     /**
      * Handle an incoming request.
      *
@@ -17,6 +22,17 @@ class AssignGuard
     {
         if ($guard != null) 
             auth()->shouldUse($guard); // تحديد الـ guard المستخدم لهذا الطلب
+
+            $token = $request->header('auth-token');
+            $request->headers->set('auth-token', (string) $token, true);
+            $request->headers->set('Authorization', 'Bearer '.$token, true);
+            try{
+                $user = $this->auth->authenticate($request); // check authenticate user
+            } catch (TokenExpiredException $e) {
+                return $this->returnError('401', 'Unauthenticate user');
+            } catch (JWTException $e) {
+                return $this->returnError('', 'token_invalid', $e->getMessage());
+            }
 
         return $next($request);
     }

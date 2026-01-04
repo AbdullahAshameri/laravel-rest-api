@@ -22,10 +22,19 @@ Route::group(['middleware' => ['api', 'checkpassword', 'changelanguage'], 'names
     Route::post('change-category-status', 'CategoriesController@changeStatus');
     Route::post('change-category-status', 'CategoriesController@changeStatus');
 
+    //admin api
     Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::post('login', 'AuthController@login');
-
         Route::post('logout', 'AuthController@logout')->middleware('auth.guard:admin-api');
+
+    });
+
+    //user api
+    Route::group(['prefix' => 'user', 'middleware' => 'auth.guard:user-api'], function () {
+        Route::post('profile', function () {
+            return 'Onlay Authenticated User Can Reach Me';
+        });
+
     });
 });
 
